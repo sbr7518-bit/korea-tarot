@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "consultations")
@@ -49,12 +50,21 @@ public class Consultation extends BaseTimeEntity {
     }
 
     public void complete(String interpretation) {
+        ensurePending();
         this.interpretation = interpretation;
         this.status = ConsultationStatus.COMPLETED;
     }
 
     public void fail() {
+        ensurePending();
         this.status = ConsultationStatus.FAILED;
+    }
+
+    private void ensurePending() {
+        if (this.status != ConsultationStatus.PENDING) {
+            throw new IllegalStateException(
+                "상태 전이 불가: 현재 상태 " + this.status + " (PENDING 상태에서만 변경 가능)");
+        }
     }
 
     public void delete() {
@@ -66,6 +76,6 @@ public class Consultation extends BaseTimeEntity {
     }
 
     public boolean isOwnedBy(Long usersId) {
-        return this.user.getUsersId().equals(usersId);
+        return this.user != null && Objects.equals(this.user.getUsersId(), usersId);
     }
 }
