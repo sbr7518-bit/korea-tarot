@@ -18,7 +18,7 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const res = await authApi.login(form)
-      setAuth(res.data.access_token, { nickname: res.data.nickname })
+      setAuth(res.data.accessToken, { nickname: res.data.nickname })
       navigate('/')
     } catch (err) {
       setError(err.message || '이메일 또는 비밀번호를 확인해 주세요.')

@@ -161,17 +161,36 @@ src/
   description: string,
 }
 
-// ConsultationDto
+// ConsultationDto (상세 / 생성 응답)
 {
   id: number,
   concern: string,
   status: 'PENDING' | 'COMPLETED' | 'FAILED',
   interpretation: string | null,
   cards: [
-    { position: 1, card: CardDto },
-    { position: 2, card: CardDto },
-    { position: 3, card: CardDto },
+    { position: number, positionLabel: string, card: CardDto },
   ],
   createdAt: string,   // ISO 8601
+}
+
+// ConsultationSummaryDto (목록 응답 — 카드 썸네일만 포함)
+{
+  id: number,
+  concern: string,
+  status: 'PENDING' | 'COMPLETED' | 'FAILED',
+  cards: [
+    { position: number, name: string, imageUrl: string },
+  ],
+  createdAt: string,
+}
+
+// PagedResponse<T> (무한 스크롤 목록 래퍼)
+{
+  content: T[],
+  page: number,
+  size: number,
+  totalElements: number,
+  totalPages: number,
+  hasNext: boolean,
 }
 ```

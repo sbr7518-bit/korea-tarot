@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import { authApi } from '../../api/auth'
-import { useAuthStore } from '../../store/authStore'
 
 export default function SignupPage() {
   const navigate = useNavigate()
-  const setAuth = useAuthStore((s) => s.setAuth)
   const [form, setForm] = useState({ email: '', nickname: '', password: '', passwordConfirm: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -21,9 +20,9 @@ export default function SignupPage() {
     }
     setLoading(true)
     try {
-      const res = await authApi.signup({ email: form.email, password: form.password, nickname: form.nickname })
-      setAuth(res.data.access_token, { nickname: res.data.nickname })
-      navigate('/')
+      await authApi.signup({ email: form.email, password: form.password, nickname: form.nickname })
+      toast.success('회원가입 완료! 로그인해 주세요.')
+      navigate('/login')
     } catch (err) {
       setError(err.message || '회원가입에 실패했어요. 다시 시도해 주세요.')
     } finally {

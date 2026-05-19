@@ -62,13 +62,15 @@ POST /auth/signup
   "status": 201,
   "message": "success",
   "data": {
-    "users_id": 1,
+    "userId": 1,
     "email": "user@example.com",
     "nickname": "또미",
-    "created_at": "2026-05-19T10:00:00"
+    "createdAt": "2026-05-19T10:00:00"
   }
 }
 ```
+
+> 회원가입 성공 후 프론트엔드는 `/login`으로 리다이렉트한다. 자동 로그인 없음.
 
 **Error**
 | 상황 | Status | message |
@@ -98,8 +100,8 @@ POST /auth/login
   "status": 200,
   "message": "success",
   "data": {
-    "access_token": "eyJhbGciOiJIUzI1NiJ9...",
-    "token_type": "Bearer",
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9...",
+    "tokenType": "Bearer",
     "nickname": "또미"
   }
 }
@@ -117,6 +119,10 @@ POST /auth/login
 ### 1-3. 로그아웃
 POST /auth/logout
 인증: 필요
+
+> JWT는 stateless이므로 서버에서 토큰을 무효화하지 않는다.
+> 프론트엔드가 localStorage의 토큰을 삭제하는 것으로 처리한다.
+> 백엔드는 인증 확인 후 200만 반환한다.
 
 **Response 200**
 ```json
@@ -142,13 +148,13 @@ GET /cards
   "message": "success",
   "data": [
     {
-      "tarot_cards_id": 1,
-      "name_kr": "광대",
-      "name_en": "The Fool",
-      "card_number": 0,
-      "arcana_type": "MAJOR",
+      "id": 1,
+      "name": "광대",
+      "nameEn": "The Fool",
+      "cardNumber": 0,
+      "arcanaType": "MAJOR",
       "suit": "NONE",
-      "image_url": "https://..."
+      "imageUrl": "https://..."
     }
   ]
 }
@@ -157,7 +163,7 @@ GET /cards
 ---
 
 ### 2-2. 카드 단건 조회
-GET /cards/{tarotCardsId}
+GET /cards/{cardId}
 인증: 불필요
 
 **Response 200**
@@ -166,14 +172,14 @@ GET /cards/{tarotCardsId}
   "status": 200,
   "message": "success",
   "data": {
-    "tarot_cards_id": 1,
-    "name_kr": "광대",
-    "name_en": "The Fool",
-    "card_number": 0,
-    "arcana_type": "MAJOR",
+    "id": 1,
+    "name": "광대",
+    "nameEn": "The Fool",
+    "cardNumber": 0,
+    "arcanaType": "MAJOR",
     "suit": "NONE",
     "description": "새로운 시작, 순수함, 모험을 상징한다.",
-    "image_url": "https://..."
+    "imageUrl": "https://..."
   }
 }
 ```
@@ -196,9 +202,9 @@ POST /consultations
 {
   "concern": "요즘 이직을 고민 중인데 어떻게 해야 할까요?",
   "cards": [
-    { "tarot_cards_id": 1,  "position": 1 },
-    { "tarot_cards_id": 15, "position": 2 },
-    { "tarot_cards_id": 42, "position": 3 }
+    { "cardId": 1,  "position": 1 },
+    { "cardId": 15, "position": 2 },
+    { "cardId": 42, "position": 3 }
   ]
 }
 ```
@@ -218,37 +224,52 @@ POST /consultations
   "status": 201,
   "message": "success",
   "data": {
-    "consultations_id": 42,
+    "id": 42,
     "concern": "요즘 이직을 고민 중인데 어떻게 해야 할까요?",
     "interpretation": "과거 카드인 광대는...(AI 해석 텍스트)",
     "status": "COMPLETED",
     "cards": [
       {
         "position": 1,
-        "position_label": "과거",
-        "tarot_cards_id": 1,
-        "name_kr": "광대",
-        "name_en": "The Fool",
-        "image_url": "https://..."
+        "positionLabel": "과거",
+        "card": {
+          "id": 1,
+          "name": "광대",
+          "nameEn": "The Fool",
+          "arcanaType": "MAJOR",
+          "suit": "NONE",
+          "imageUrl": "https://...",
+          "description": "새로운 시작, 순수함, 모험을 상징한다."
+        }
       },
       {
         "position": 2,
-        "position_label": "현재",
-        "tarot_cards_id": 15,
-        "name_kr": "악마",
-        "name_en": "The Devil",
-        "image_url": "https://..."
+        "positionLabel": "현재",
+        "card": {
+          "id": 15,
+          "name": "악마",
+          "nameEn": "The Devil",
+          "arcanaType": "MAJOR",
+          "suit": "NONE",
+          "imageUrl": "https://...",
+          "description": "유혹, 속박, 물질주의를 상징한다."
+        }
       },
       {
         "position": 3,
-        "position_label": "미래",
-        "tarot_cards_id": 42,
-        "name_kr": "완드 에이스",
-        "name_en": "Ace of Wands",
-        "image_url": "https://..."
+        "positionLabel": "미래",
+        "card": {
+          "id": 42,
+          "name": "완드 에이스",
+          "nameEn": "Ace of Wands",
+          "arcanaType": "MINOR",
+          "suit": "WANDS",
+          "imageUrl": "https://...",
+          "description": "창의적 에너지, 새로운 시작, 열정을 상징한다."
+        }
       }
     ],
-    "created_at": "2026-05-19T10:00:00"
+    "createdAt": "2026-05-19T10:00:00"
   }
 }
 ```
@@ -269,10 +290,12 @@ POST /consultations
 GET /consultations
 인증: 필요
 
+> 무한 스크롤 지원. page=0부터 시작하여 `hasNext: false`가 될 때까지 요청한다.
+
 **Query Parameter**
 | 파라미터 | 타입 | 필수 | 기본값 | 설명 |
 |---|---|---|---|---|
-| page | int | N | 0 | 페이지 번호 |
+| page | int | N | 0 | 페이지 번호 (0-based) |
 | size | int | N | 10 | 페이지 크기 |
 
 **Response 200**
@@ -283,21 +306,22 @@ GET /consultations
   "data": {
     "content": [
       {
-        "consultations_id": 42,
+        "id": 42,
         "concern": "요즘 이직을 고민 중인데...",
         "status": "COMPLETED",
         "cards": [
-          { "position": 1, "name_kr": "광대", "image_url": "https://..." },
-          { "position": 2, "name_kr": "악마", "image_url": "https://..." },
-          { "position": 3, "name_kr": "완드 에이스", "image_url": "https://..." }
+          { "position": 1, "name": "광대", "imageUrl": "https://..." },
+          { "position": 2, "name": "악마", "imageUrl": "https://..." },
+          { "position": 3, "name": "완드 에이스", "imageUrl": "https://..." }
         ],
-        "created_at": "2026-05-19T10:00:00"
+        "createdAt": "2026-05-19T10:00:00"
       }
     ],
     "page": 0,
     "size": 10,
-    "total_elements": 1,
-    "total_pages": 1
+    "totalElements": 1,
+    "totalPages": 1,
+    "hasNext": false
   }
 }
 ```
@@ -305,7 +329,7 @@ GET /consultations
 ---
 
 ### 3-3. 상담 기록 상세 조회
-GET /consultations/{consultationsId}
+GET /consultations/{consultationId}
 인증: 필요
 
 **Response 200**
@@ -314,37 +338,52 @@ GET /consultations/{consultationsId}
   "status": 200,
   "message": "success",
   "data": {
-    "consultations_id": 42,
+    "id": 42,
     "concern": "요즘 이직을 고민 중인데 어떻게 해야 할까요?",
     "interpretation": "과거 카드인 광대는...(AI 해석 텍스트 전문)",
     "status": "COMPLETED",
     "cards": [
       {
         "position": 1,
-        "position_label": "과거",
-        "tarot_cards_id": 1,
-        "name_kr": "광대",
-        "name_en": "The Fool",
-        "image_url": "https://..."
+        "positionLabel": "과거",
+        "card": {
+          "id": 1,
+          "name": "광대",
+          "nameEn": "The Fool",
+          "arcanaType": "MAJOR",
+          "suit": "NONE",
+          "imageUrl": "https://...",
+          "description": "새로운 시작, 순수함, 모험을 상징한다."
+        }
       },
       {
         "position": 2,
-        "position_label": "현재",
-        "tarot_cards_id": 15,
-        "name_kr": "악마",
-        "name_en": "The Devil",
-        "image_url": "https://..."
+        "positionLabel": "현재",
+        "card": {
+          "id": 15,
+          "name": "악마",
+          "nameEn": "The Devil",
+          "arcanaType": "MAJOR",
+          "suit": "NONE",
+          "imageUrl": "https://...",
+          "description": "유혹, 속박, 물질주의를 상징한다."
+        }
       },
       {
         "position": 3,
-        "position_label": "미래",
-        "tarot_cards_id": 42,
-        "name_kr": "완드 에이스",
-        "name_en": "Ace of Wands",
-        "image_url": "https://..."
+        "positionLabel": "미래",
+        "card": {
+          "id": 42,
+          "name": "완드 에이스",
+          "nameEn": "Ace of Wands",
+          "arcanaType": "MINOR",
+          "suit": "WANDS",
+          "imageUrl": "https://...",
+          "description": "창의적 에너지, 새로운 시작, 열정을 상징한다."
+        }
       }
     ],
-    "created_at": "2026-05-19T10:00:00"
+    "createdAt": "2026-05-19T10:00:00"
   }
 }
 ```
@@ -358,7 +397,7 @@ GET /consultations/{consultationsId}
 ---
 
 ### 3-4. 상담 기록 삭제
-DELETE /consultations/{consultationsId}
+DELETE /consultations/{consultationId}
 인증: 필요
 
 **Response 200**
