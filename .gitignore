@@ -1,0 +1,61 @@
+### IntelliJ IDEA ###
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+.kotlin
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+### Spring Boot ###
+build/
+.gradle/
+*.jar
+application-local.yml
+application-secret.yml
+
+### React/Vite ###
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+### FastAPI ###
+ai-server/__pycache__/
+ai-server/*.pyc
+ai-server/.venv/
+ai-server/venv/
+ai-server/.env
+ai-server/faiss_index.bin
+ai-server/faiss_metadata.json
+
+### 환경변수 ###
+.env
+.env.local
+.env.production
+
+### 로그 ###
+*.log
+logs/
