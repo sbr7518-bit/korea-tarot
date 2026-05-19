@@ -1,7 +1,5 @@
 package com.mistiktarot.global.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mistiktarot.global.response.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -23,11 +22,12 @@ public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final CustomUserDetailsService userDetailsService;
-    private final ObjectMapper objectMapper;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -39,8 +39,8 @@ public class SecurityConfig {
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             response.setCharacterEncoding("UTF-8");
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            objectMapper.writeValue(response.getWriter(),
-                                    ApiResponse.error(401, "로그인이 필요합니다"));
+                            response.getWriter().write(
+                                    "{\"status\":401,\"message\":\"로그인이 필요합니다\",\"data\":null}");
                         })
                 )
                 .addFilterBefore(new JwtFilter(jwtProvider, userDetailsService),
