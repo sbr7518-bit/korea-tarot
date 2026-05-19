@@ -3,7 +3,7 @@ spring:
     name: korea-tarot
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/korea_tarot
+    url: jdbc:postgresql://localhost:5432/korea-tarot
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:password}
     driver-class-name: org.postgresql.Driver

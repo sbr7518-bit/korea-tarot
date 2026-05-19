@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { authApi } from '../../api/auth'
+import BrandLogo from '../../components/BrandLogo'
 
 export default function SignupPage() {
   const navigate = useNavigate()
@@ -24,7 +25,7 @@ export default function SignupPage() {
       toast.success('회원가입 완료! 로그인해 주세요.')
       navigate('/login')
     } catch (err) {
-      setError(err.message || '회원가입에 실패했어요. 다시 시도해 주세요.')
+      setError(err.message || err.data?.message || '회원가입에 실패했어요. 다시 시도해 주세요.')
     } finally {
       setLoading(false)
     }
@@ -33,16 +34,7 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen mystical-bg flex flex-col items-center justify-center px-container-margin">
       <div className="w-full max-w-app">
-        {/* 로고 */}
-        <div className="text-center mb-10">
-          <div className="w-16 h-16 rounded-xl bg-primary-container flex items-center justify-center mx-auto mb-4 shadow-purple-md">
-            <span className="material-symbols-outlined text-tertiary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-              auto_awesome
-            </span>
-          </div>
-          <h1 className="text-headline-lg-mobile font-bold text-on-surface tracking-tight">Mistik Tarot</h1>
-          <p className="text-body-md text-on-surface-variant mt-1">AI 타로 상담 서비스</p>
-        </div>
+        <BrandLogo />
 
         {/* 카드 */}
         <div className="bg-surface-container-lowest rounded-lg p-8 shadow-purple-md">
