@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { authApi } from '../../api/auth'
 import { useAuthStore } from '../../store/authStore'
+import BrandLogo from '../../components/BrandLogo'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -21,7 +22,7 @@ export default function LoginPage() {
       setAuth(res.data.accessToken, { nickname: res.data.nickname })
       navigate('/')
     } catch (err) {
-      setError(err.message || '이메일 또는 비밀번호를 확인해 주세요.')
+      setError(err.message || err.data?.message || '이메일 또는 비밀번호를 확인해 주세요.')
     } finally {
       setLoading(false)
     }
@@ -30,16 +31,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen mystical-bg flex flex-col items-center justify-center px-container-margin">
       <div className="w-full max-w-app">
-        {/* 로고 */}
-        <div className="text-center mb-10">
-          <div className="w-16 h-16 rounded-xl bg-primary-container flex items-center justify-center mx-auto mb-4 shadow-purple-md">
-            <span className="material-symbols-outlined text-tertiary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-              auto_awesome
-            </span>
-          </div>
-          <h1 className="text-headline-lg-mobile font-bold text-on-surface tracking-tight">Mistik Tarot</h1>
-          <p className="text-body-md text-on-surface-variant mt-1">AI 타로 상담 서비스</p>
-        </div>
+        <BrandLogo />
 
         {/* 카드 */}
         <div className="bg-surface-container-lowest rounded-lg p-8 shadow-purple-md">

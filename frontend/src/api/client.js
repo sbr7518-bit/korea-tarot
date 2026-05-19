@@ -15,7 +15,8 @@ client.interceptors.request.use((config) => {
 client.interceptors.response.use(
   (res) => res.data,
   (err) => {
-    if (err.response?.status === 401) {
+    const token = useAuthStore.getState().token
+    if (err.response?.status === 401 && token) {
       useAuthStore.getState().clearAuth()
       window.location.href = '/login'
     }
