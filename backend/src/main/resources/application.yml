@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: korea-tarot
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/korea_tarot
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+server:
+  port: 8080
+
+jwt:
+  secret: ${JWT_SECRET:local-dev-secret-key-must-be-at-least-256-bits-long}
+  expiration: 86400000  # 24h (ms)
+
+ai-server:
+  base-url: ${AI_SERVER_URL:http://localhost:8000}

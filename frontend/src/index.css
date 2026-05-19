@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    font-family: 'Plus Jakarta Sans', 'Pretendard', sans-serif;
+  }
+
+  body {
+    @apply bg-background text-on-background;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
+}
+
+@layer components {
+  /* 타로카드 글로우 */
+  .glow-card {
+    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.08), inset 0 0 15px rgba(234, 222, 245, 0.4);
+  }
+
+  /* 카드 뒤집기 3D */
+  .card-perspective {
+    perspective: 1200px;
+  }
+
+  .tarot-card {
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s ease;
+    transform-style: preserve-3d;
+  }
+
+  .tarot-card:hover {
+    transform: translateY(-20px) rotateY(5deg) scale(1.05);
+    box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.15);
+  }
+
+  .tarot-card.selected {
+    transform: translateY(-100px) scale(1.1);
+    z-index: 100;
+  }
+
+  /* 카드 캐러셀 마스크 */
+  .carousel-mask {
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+
+  /* 바텀시트 */
+  .bottom-sheet-transition {
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  /* 스크롤바 숨김 */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* 신비로운 배경 */
+  .mystical-bg {
+    background: radial-gradient(circle at 50% 50%, #f4e8ff 0%, #f8f9fa 100%);
+  }
+
+  /* 유리 카드 */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+  }
+
+  /* Material Symbols */
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+}
