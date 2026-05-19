@@ -6,7 +6,7 @@ import { useAuthStore } from '../../store/authStore'
 export default function SignupPage() {
   const navigate = useNavigate()
   const setAuth = useAuthStore((s) => s.setAuth)
-  const [form, setForm] = useState({ email: '', password: '', passwordConfirm: '' })
+  const [form, setForm] = useState({ email: '', nickname: '', password: '', passwordConfirm: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -21,8 +21,8 @@ export default function SignupPage() {
     }
     setLoading(true)
     try {
-      const res = await authApi.signup({ email: form.email, password: form.password })
-      setAuth(res.data.token, res.data.user)
+      const res = await authApi.signup({ email: form.email, password: form.password, nickname: form.nickname })
+      setAuth(res.data.access_token, { nickname: res.data.nickname })
       navigate('/')
     } catch (err) {
       setError(err.message || '회원가입에 실패했어요. 다시 시도해 주세요.')
@@ -58,6 +58,20 @@ export default function SignupPage() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="example@email.com"
+                required
+                className="bg-surface-container-low rounded-full px-5 py-3 text-body-md text-on-surface placeholder:text-outline outline-none focus:ring-2 focus:ring-tertiary-container transition"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-label-md text-on-surface-variant">닉네임</label>
+              <input
+                name="nickname"
+                type="text"
+                value={form.nickname}
+                onChange={handleChange}
+                placeholder="2~20자로 입력하세요"
+                minLength={2}
+                maxLength={20}
                 required
                 className="bg-surface-container-low rounded-full px-5 py-3 text-body-md text-on-surface placeholder:text-outline outline-none focus:ring-2 focus:ring-tertiary-container transition"
               />

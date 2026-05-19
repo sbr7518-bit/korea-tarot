@@ -158,7 +158,7 @@ src/
   arcanaType: 'MAJOR' | 'MINOR',
   suit: 'WANDS' | 'CUPS' | 'SWORDS' | 'PENTACLES' | 'NONE',
   imageUrl: string,
-  keywords: string,
+  description: string,
 }
 
 // ConsultationDto
